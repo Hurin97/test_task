@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+}
+
+group 'somethinggi'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+//jar {
+//    archiveBaseName = 'test-task'
+//    archiveVersion =  '0.1.0'
+//}
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Title': project.name,
+                'Implementation-Version': project.version,
+                'Main-Class': 'Main')
+    }
+    archivesBaseName = project.name
+}
+//project{
+//    name ="test_task"
+//    version ="0.1.1"
+//}
