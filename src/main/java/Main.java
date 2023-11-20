@@ -51,7 +51,7 @@ public class Main {
         List<String> lines = new ArrayList<>();
         try(Stream<String> linesFromFile = Files.lines(Paths.get(path))){
                 lines=linesFromFile.distinct()
-                    .filter(f -> !f.matches("(.*)\\w++\\W\\w++(.*)"))
+                    .filter(f -> !f.matches("(.*)\\w++\"\\w++(.*)"))
                     .collect(Collectors.toList());
         } catch (IOException e) {
             e.printStackTrace();
