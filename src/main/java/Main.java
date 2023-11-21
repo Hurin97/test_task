@@ -158,25 +158,26 @@ public class Main {
 
     private static void getResultOfGrouping (List<List<String>> lines,String path) {
         try (OutputStream outputStream = Files.newOutputStream(Paths.get(path))) {
-            int cSL=lines.size();
-            StringBuffer stringBuilder = new StringBuffer();
-            stringBuilder.append("Total groups with 2 or more lines:")
-                    .append(cSL)
-                    .append("\n");
-            AtomicInteger pos = new AtomicInteger();
-            lines.stream()
+            List<List<String>> sortedLines = lines.stream()
                     .filter(o -> o.size() > 1)
                     .sorted((s1, s2) -> s2.size() - s1.size())
-                    .forEach(f-> {
-                        pos.getAndIncrement();
-                        stringBuilder.append("group #")
-                                .append(pos)
-                                .append("\n");
-                        f.forEach(x-> {
-                            stringBuilder.append(x)
-                                    .append("\n");
-                        });
-                    });
+                    .collect(Collectors.toList());
+            int numbersOfGroups=sortedLines.size();
+            StringBuffer stringBuilder = new StringBuffer();
+            stringBuilder.append("Total groups with 2 or more lines:")
+                    .append(numbersOfGroups)
+                    .append("\n");
+            AtomicInteger pos = new AtomicInteger();
+            sortedLines.forEach(f-> {
+                pos.getAndIncrement();
+                stringBuilder.append("group #")
+                        .append(pos)
+                        .append("\n");
+                f.forEach(x-> {
+                    stringBuilder.append(x)
+                            .append("\n");
+                });
+            });
             outputStream.write(stringBuilder.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
