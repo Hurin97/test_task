@@ -158,13 +158,26 @@ public class Main {
 
     private static void getResultOfGrouping (List<List<String>> lines,String path) {
         try (OutputStream outputStream = Files.newOutputStream(Paths.get(path))) {
-            outputStream.write(("Total groups with 2 or more lines:" + lines.stream().filter(f -> f.size() > 1)
-                    .count() + "\n").getBytes());
-            lines.stream().filter(o -> o.size() > 1)
+            int cSL=lines.size();
+            StringBuffer stringBuilder = new StringBuffer();
+            stringBuilder.append("Total groups with 2 or more lines:")
+                    .append(cSL)
+                    .append("\n");
+            AtomicInteger pos = new AtomicInteger();
+            lines.stream()
+                    .filter(o -> o.size() > 1)
                     .sorted((s1, s2) -> s2.size() - s1.size())
-                    .peek(exceptionWrapper(p ->outputStream.write(("group #" + lines.indexOf(p) + "\n").getBytes()), IOException.class))
-                    .forEach(f -> f.stream()
-                    .forEach(exceptionWrapper(x -> outputStream.write(("|" + x.toString() + "\n").getBytes()), IOException.class)));
+                    .forEach(f-> {
+                        pos.getAndIncrement();
+                        stringBuilder.append("group #")
+                                .append(pos)
+                                .append("\n");
+                        f.forEach(x-> {
+                            stringBuilder.append(x)
+                                    .append("\n");
+                        });
+                    });
+            outputStream.write(stringBuilder.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
